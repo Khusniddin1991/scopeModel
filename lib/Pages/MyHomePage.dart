@@ -1,12 +1,13 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:scopemodel/Model/Post.dart';
 import 'package:scopemodel/ModelView/ViewModel.dart';
 import 'package:scopemodel/ModelView/ViewModel.dart';
 import 'package:scopemodel/ModelView/ViewModel.dart';
+import 'package:scopemodel/Pages/pages.dart';
 import 'package:scopemodel/Pages/updatePage.dart';
 
 
@@ -55,7 +56,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Scoped Model"),
+          title: Text("Mobx"),
+          centerTitle: true,
         ),
         body: ScopedModel<HomeScopedModel>(
           model: viewModel,
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                   ListView.builder(
                     itemCount: viewModel.items.length,
                     itemBuilder: (ctx, index) {
-                      return itemOfPost(viewModel, viewModel.items[index]);
+                      return  itemOfPost(viewModel, viewModel.items[index]);
                     },
                   ),
                   viewModel.isLoading
@@ -89,9 +91,13 @@ class _HomePageState extends State<HomePage> {
         ));
   }
   Widget itemOfPost(HomeScopedModel viewModel, Post post) {
-      return Slidable(
-        actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      child: GestureDetector(
+        onTap: (){
+          Navigator.push(context, PageTransition(child:DetailPages(posts:viewModel.items ,), type: PageTransitionType.rightToLeft,curve: Curves.bounceOut,duration:Duration(seconds: 1) ));
+        },
         child: Container(
           padding: EdgeInsets.only(left: 20, right: 20, top: 20),
           child: Column(
@@ -109,29 +115,29 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        actions: <Widget>[
-          IconSlideAction(
-            caption: 'Update',
-            color: Colors.indigo,
-            icon: Icons.edit,
-            onTap: () {
-              openDetails();
-            },
-          ),
-        ],
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            caption: 'Delete',
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () {
-              viewModel.apiPostDelete(post).then((value) => {
-                if(value) viewModel.apiPostList(),
-              });
-            },
-          ),
-        ],
-      );
-    }
+      ),
+      actions: <Widget>[
+        IconSlideAction(
+          caption: 'Update',
+          color: Colors.indigo,
+          icon: Icons.edit,
+          onTap: () {
+            openDetails();
+          },
+        ),
+      ],
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () {
+            viewModel.apiPostDelete(post).then((value) => {
+              if(value) viewModel.apiPostList(),
+            });
+          },
+        ),
+      ],
+    );
+  }
 }
-// Loading complete

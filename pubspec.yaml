@@ -33,6 +33,7 @@ dependencies:
   http: any
   flutter_slidable: any
   scoped_model: any
+  page_transition: any
 
 dev_dependencies:
   flutter_test:
